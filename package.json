@@ -1,0 +1,23 @@
+{
+  "name": "vfl",
+  "version": "1.0.0",
+  "description": "Virtual Football League Scrapper",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "VFL",
+    "Scrapper"
+  ],
+  "author": "Mobolaji Johnson",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.24.0",
+    "cheerio": "^1.0.0-rc.10",
+    "pretty": "^2.0.0",
+    "puppeteer": "^11.0.0"
+  }
+}
