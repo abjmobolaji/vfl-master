@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./assets/style.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon-16x16.png">
+    <link rel="manifest" href="./assets/site.webmanifest">
+    
+    <title>VFL Master - Home</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-sm bg-nav">
+        <a class="navbar-brand" href="#"><h3>VFL Master</h3></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="collapsibleNavbar">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="./">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./games.html">Games</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./history.html">History</a>
+                </li>    
+            </ul>
+        </div>  
+    </nav>
+    <div class="main-content">
+        <!-- Body Content will render here -->
+        <h4>Welcome to VFL Master</h4>
+        <hr/>
+
+        <div class="row">
+            <div class="col-lg-5">
+                <h5>Add New History</h5>
+                <hr/>
+                <form onclick="return false">
+                    <div class="form-group">
+                        <label>Start Capital: </label> <br/>
+                        <input type="number" class="form-control" name="startCapital" id="startCapital" required/>
+                    </div>
+                    <div class="form-group">
+                        <label>End Capital: </label> <br/>
+                        <input type="number" class="form-control" name="endCapital" id="endCapital" required/>
+                    </div>
+                    <button type="submit" class="btn bg-nav" onclick="submitNew()">Submit</button>
+                </form>
+            </div>
+            <div class="col-lg-5 offset-lg-2">
+                <h5>All Time Statistics</h5>
+                <hr/>
+                <p><strong>Total Games:</strong> <span id="games">...</span></p>
+                <p><strong>Total Profit (All-Time):</strong> <span id="allTotal">...</span></p>
+                <p><strong>Total Profit (November):</strong> <span id="monthTotal">...</span></p>
+            </div>
+        </div>
+        <hr/>
+
+        <h4>VFL Stake Calculator</h4>
+        <hr/>
+        <p class="text-muted"><sup>*</sup>Minimum Capital is ₦17,000 and Minimum Odd is 1.65</p>
+        <div class="form-inline">
+            <label for="capital">Capital:</label> &nbsp;
+            <input type="number" class="form-control" id="stakeCapital">&nbsp;
+            <button type="button" class="btn bg-nav" onclick="calculateStake()">Calculate</button>
+        </div>
+        <div id="stakeTable" class="pt-3"></div>
+        <hr/>
+    </div>
+
+    <footer>
+        <h2>VFL Master - Abjmobolaji</h2>
+        <p>Copyright &copy; 2021</p>
+    </footer>
+
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="./assets/script.js"></script>
+
+    <script>
+        const url = getURL()+"home";
+        $( document ).ready(function() {
+            fetchStats(url);
+        });
+
+        // Fetch Stats 
+        function fetchStats(url) {
+            $.ajax({
+                    url: url,
+                    type: 'GET',
+                    dataType: 'json', // added data type
+                    success: function(res) {
+                        if(res.status == "success") {
+                            let {games, allTotal, monthTotal} =  res.data;
+                            displayStats(games, allTotal, monthTotal);
+                        } else {
+                            displayStats(0, 0, 0);
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        displayStats(0, 0, 0);
+                    }
+                });
+        }
+
+        // Display Updated Stats
+        function displayStats(gamesCount, allTotal, monthTotal) {
+            $("#games").text(numberWithCommas(gamesCount));
+            $("#allTotal").text("₦"+numberWithCommas(allTotal));
+            $("#monthTotal").text("₦"+numberWithCommas(monthTotal));
+        }
+
+        // Add New Record
+        function submitNew() {
+
+            let startCapital = $("#startCapital").val();
+            let endCapital = $("#endCapital").val();
+
+            // Validate Values
+            if(!startCapital || !endCapital) { 
+                alert("Invalid Details Supplied!!!");
+                return;
+            }
+
+            if(Number.isNaN(startCapital) || Number.isNaN(endCapital)) { 
+                alert("Only Numbers Accepted as Input Values!!!");
+                return;
+            }
+
+            $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+                        start: startCapital,
+                        end: endCapital
+                    },
+                    dataType: 'json', // added data type
+                    success: function(res) {
+                        document.getElementById("startCapital").value = "";
+                        document.getElementById("endCapital").value = "";
+                        alert("New Record Added!");
+                        fetchStats(url);
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                       alert("Something went wrong!!!");
+                    }
+                });
+        }
+
+    </script>
+</body>
+</html>
