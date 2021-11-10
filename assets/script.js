@@ -86,7 +86,7 @@ function numberWithCommas(x) {
 // Get Url
 function getURL() {
     let localLink = 'http://localhost:3000/';
-    let liveLink = 'http://vflmasters.heroku.app/';
+    let liveLink = 'https://vfl-masters.herokuapp.com/';
     let url = window.location.href;
     return (url.split(":")[0] == "http") ? localLink : liveLink;
 }
