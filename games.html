@@ -37,8 +37,11 @@
     <div class="main-content">
         <!-- Body Content will render here -->
         <div class="row justify-content-between align-items-end">
-            <div class="col-auto mr-auto">
+            <div class="col-auto ">
                 <h4>Teams</h4>
+            </div>
+            <div class="col-auto m-auto">
+                <h6>Last Updated: </h6><span id="lastUpdated"></span>
             </div>
             <div class="col-auto">
                 <div class="form-inline">
@@ -90,7 +93,7 @@
 
         setInterval(function(){ 
             fetchGameRecords(url);
-        }, 175000);
+        }, 165000);
 
         // Fetch Records
         function fetchGameRecords(url) {
@@ -173,7 +176,11 @@
             `;
 
             $('#gamesTable').html(html).promise().done(function(){
-                const pageURL = getURL()+"games.html";
+                const d = new Date();
+                let text = d.toLocaleTimeString();
+                document.getElementById("lastUpdated").innerHTML = text;
+
+                const pageURL = "https://vflmasters.tk/games.html";
                 if(notifyArr.length) {
                     let notifyData = notifyArr.join(" \n ");
                     showNotification(notifyData, pageURL);
