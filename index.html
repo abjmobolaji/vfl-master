@@ -124,6 +124,11 @@
 
         // Add New Record
         function submitNew() {
+            let password = prompt("Enter Password: ");
+            if(btoa(password) !== "MXR3bzNmb3Vy")  {
+                alert("Wrong password!!!");
+                return;
+            }
 
             let startCapital = $("#startCapital").val();
             let endCapital = $("#endCapital").val();
