@@ -88,8 +88,8 @@ function getURL() {
     let localLink = 'http://localhost:3000/';
     let liveLink = 'https://vfl-masters.herokuapp.com/';
     let url = window.location.href;
-    // return (url.split(":")[0] == "http") ? localLink : liveLink;
-    return localLink;
+    return (url.split(":")[0] == "http") ? localLink : liveLink;
+    // return localLink;
 }
 
 // Display Empty table
