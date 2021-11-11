@@ -183,6 +183,10 @@ app.post('/home', async (req, res) => {
 
 // Games
 app.get('/games', async (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+    );
     if(season) {
         let myGames = [];
         for(let i = 0;  i < 8; i++) {
