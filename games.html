@@ -94,7 +94,7 @@
 
         // Fetch Records
         function fetchGameRecords(url) {
-            console.log(url)
+            // console.log(url)
             $.ajax({
                     url: url,
                     type: 'GET',
@@ -237,7 +237,7 @@
         checkNotification();
 
         function showNotification(data = "No new update yet!!!", url = "http://localhost:3000/") {
-            console.log("Yes");
+            // console.log("Yes");
             const notification = new Notification("VFL Matser Update", {
                 body: data,
                 icon: "./assets/logo.png"
