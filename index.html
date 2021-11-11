@@ -140,23 +140,23 @@
             }
 
             $.ajax({
-                    url: url,
-                    type: 'POST',
-                    data: {
-                        start: startCapital,
-                        end: endCapital
-                    },
-                    dataType: 'json', // added data type
-                    success: function(res) {
-                        document.getElementById("startCapital").value = "";
-                        document.getElementById("endCapital").value = "";
-                        alert("New Record Added!");
-                        fetchStats(url);
-                    },
-                    error: function (xhr, ajaxOptions, thrownError) {
-                       alert("Something went wrong!!!");
-                    }
-                });
+                url: url,
+                type: 'POST',
+                data: {
+                    start: startCapital,
+                    end: endCapital
+                },
+                dataType: 'json', // added data type
+                success: function(res) {
+                    document.getElementById("startCapital").value = "";
+                    document.getElementById("endCapital").value = "";
+                    alert("New Record Added!");
+                    fetchStats(url);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                   alert("Something went wrong!!!");
+                }
+            });
         }
 
     </script>

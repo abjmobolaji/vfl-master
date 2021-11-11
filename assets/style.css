@@ -58,3 +58,6 @@ button:disabled {
 #emptyTable {
     text-align: center;
 }
+.gameLink {
+    padding: 3px 10px;
+}

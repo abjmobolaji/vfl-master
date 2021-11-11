@@ -93,5 +93,6 @@ function getURL() {
 
 // Display Empty table
 function displayEmpty(id) {
-    $(`#${id}`).removeClass("d-none");
+    $(`#${id}`).addClass("d-none");
+    $(`#emptyTable`).removeClass("d-none");
 }
