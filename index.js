@@ -317,7 +317,7 @@ async function scrapeData(url) {
             data1 = {
                 status : true,
                 teamName: teamArray[0],
-                runType: teamStatus1,
+                run: teamStatus1,
                 url: url
             }
             // console.log(data1)
@@ -334,7 +334,7 @@ async function scrapeData(url) {
             data2 = {
                 status : true,
                 teamName: teamArray[1],
-                runType: teamStatus2,
+                run: teamStatus2,
                 url: url
             }
             // console.log(data2)
