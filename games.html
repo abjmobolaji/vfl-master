@@ -221,11 +221,11 @@
         function checkNotification() {
             // console.log(Notification.permission)
             if(Notification && Notification.permission === "granted") {
-                showNotification()
+                // showNotification()
             } else if(Notification && Notification.permission !== "denied") { 
                 Notification.requestPermission().then(permission => {
                     if(permission === "granted") {
-                        showNotification();
+                        // showNotification();
                     } else {
                         alert("Notifications not enabled!!!");
                     }
@@ -245,7 +245,7 @@
 
         function showNotification(data = "No new update yet!!!", url = "http://localhost:3000/") {
             // console.log("Yes");
-            const notification = new Notification("VFL Matser Update", {
+            const notification = new Notification("VFL Master Update", {
                 body: data,
                 icon: "./assets/logo.png"
             })
