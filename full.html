@@ -230,9 +230,7 @@
                                     </table>`;
                                 
                                 $('#fullTable').html(body).promise().done(function(){
-                                    const d = new Date();
-                                    let text = d.toLocaleTimeString();
-                                    document.getElementById("lastUpdated").innerHTML = text;
+                                    showTime();
 
                                     const pageURL = "https://vflmasters.tk/full.html";
                                     if(notifyArr.length) {
@@ -261,10 +259,11 @@
                                         </tbody>
                                     </table>
                                 `);
+                                showTime();
                             }
                  
                             // End Time
-                            console.log("End: ", Date.now()/1000)
+                            // console.log("End: ", Date.now()/1000)
                         }
                         else displayEmpty("fullTable");
                     },
@@ -272,6 +271,12 @@
                         displayEmpty("fullTable");
                     }
                 });
+        }
+
+        function showTime() {
+            const d = new Date();
+            let text = d.toLocaleTimeString();
+            document.getElementById("lastUpdated").innerHTML = text;
         }
 
         // Update Mode
