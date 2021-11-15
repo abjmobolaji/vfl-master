@@ -238,7 +238,6 @@
                                         let notifyData = notifyArr.join(" \n ");
                                         showNotification(notifyData, pageURL);
                                     }
-                                    console.log("End: ", Date.now()/1000)
                                 });
                             } else {
                                 sessionStorage.removeItem('games');
@@ -263,10 +262,8 @@
                                 `);
                             }
                  
-
-
-                            // displayFullTable(res.data);
-                            //  console.log(res.data);
+                            // End Time
+                            console.log("End: ", Date.now()/1000)
                         }
                         else displayEmpty("fullTable");
                     },
