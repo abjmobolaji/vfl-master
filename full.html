@@ -146,6 +146,7 @@
                     dataType: 'json', // added data type
                     success: function(res) {
                         if(res.status == "success") {
+                            console.log(res);
                             if(res.data.length > 0) {
                                 // Initialize Variables
                                 let { data, match } = res;
@@ -190,7 +191,7 @@
                                         body += `<tr>
                                                     <th scope="row">${++counter}</th>
                                                     <td>${data[i].teamName}</td>
-                                                    <td><span class="badge badge-pill badge-${badgeColor[runLength]}">${runLength}</span></td>                            
+                                                    <td><span class="badge badge-pill badge-${badgeColor[runLength]} p-1">${runLength}</span></td>                            
                                                     <td class="make-bold">${data[i].run[0]}</td>
                                                     <td><a class="btn btn-success gameLink" href="${data[i].url}" target="_blank" role="button">Live</a></td>
                                                     <td class="d-none d-lg-table-cell d-xl-table-cell">${data[i].run.join(", ")}</td>                        
@@ -205,9 +206,9 @@
                                     let counter = 0;
                                     for(let i = 0; i < data.length; i++) {
                                         let { teamName, run, url, teamID } = data[i];
-                                        myGames[teamId] = {};
+                                        myGames[teamID] = {};
                                         for(let j = 0; j < run.length; j++) {
-                                            myGames[teamId][match[j]] = run[0];
+                                            myGames[teamID][match[j]] = run[0];
                                         }
                                         body += `<tr>
                                                     <th scope="row">${++counter}</th>
