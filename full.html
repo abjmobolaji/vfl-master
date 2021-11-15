@@ -152,9 +152,9 @@
                                 let { data, match } = res;
                                 // Initialize Badge Color
                                 let badgeColor = {
-                                    5 : "danger", 6 : "warning", 
+                                    5 : "danger", 6 : "info", 
                                     7 : "success", 8 : "success",
-                                    9 : "info", 10 : "primary", 11 : "dark"
+                                    9 : "primary", 10 : "bg-nav", 11 : "dark"
                                 }
                                 // Create Table
                                 let body = `
@@ -186,14 +186,14 @@
                                         // Add run to Notifications if greater equal than "Mode"
                                         mode = parseInt(sessionStorage.getItem('mode')) || 6;
                                         if(runLength >= mode) {
-                                            notifyArr.push(`${data.teamName} - ${data.run[0]}-(${runLength})`);
+                                            notifyArr.push(`${data[i].teamName}-${data[i].run[0]}-(${runLength})`);
                                         }
                                         body += `<tr>
                                                     <th scope="row">${++counter}</th>
                                                     <td>${data[i].teamName}</td>
                                                     <td><span class="badge badge-pill badge-${badgeColor[runLength]} p-1">${runLength}</span></td>                            
                                                     <td class="make-bold">${data[i].run[0]}</td>
-                                                    <td><a class="btn btn-success gameLink" href="${data[i].url}" target="_blank" role="button">Live</a></td>
+                                                    <td><a class="btn btn-${badgeColor[runLength]} gameLink" href="${data[i].url}" target="_blank" role="button">Live</a></td>
                                                     <td class="d-none d-lg-table-cell d-xl-table-cell">${data[i].run.join(", ")}</td>                        
                                                 </tr>`;
                                     }
