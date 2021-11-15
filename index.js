@@ -226,6 +226,39 @@ app.post('/games', async (req, res) => {
     });
 });
 
+
+// Games
+app.get('/full', async (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    if(season) {
+        let myGames = [];
+        let matchNo;
+        for(let i = 0;  i < 8; i++) {
+            let data = await scrapeWinningData(urls[i], i);
+            if(i == 0) matchNo = await data.matchNo;
+            if(data.data1 != undefined) {
+                myGames.push(data.data1);
+            } 
+            if(data.data2 != undefined) {
+                myGames.push(data.data2);
+            } 
+        }
+        return res.status(200).send({ 
+            status: "success",
+            data: myGames,
+            match: matchNo
+        })
+    } else {
+        return res.status(400).send({ 
+            status: "error",
+            message: "Season ID is Invalid"
+        })
+    }
+});
+''
 // History
 app.get('/history', async (req, res) => {
     // BASIC QUERY CHECK (page, limt per page, and  results sort)
@@ -349,6 +382,94 @@ async function scrapeData(url) {
 
         /////////////////// RETURN RESULTS //////////////////////////
         return {data1, data2};
+    } catch (err) {
+        console.error(err);
+        return { err: err.message };
+    }
+}
+
+// Async function which scrapes the data for teams on a run
+async function scrapeWinningData(url, index = 1) {
+    if(!url) return;
+    // get team ids from urls
+    let teams_ids = url.split('h2h/')[1].split("/");
+    try {
+        // Fetch HTML of the page we want to scrape
+        const { data } = await axios.get(url);
+        // Load HTML we fetched in the previous line
+        const $ = cheerio.load(data,null, false);
+
+        //////////////////////////// GET TEAM NAMES ////////////////////////////////////
+        const teams =  $('#teambox > div.col-xs.flex-xs-no-grow.flex-xs-basis-auto.no-wrap.ie-fallback-width-65 > div > div.col-xs-12.no-wrap.cursor-pointer > div.hidden-xs-up.visible-sm-up > div > div.col-xs.flex-xs-no-grow.wrap > div.hidden-xs-up.visible-sm-up.size-l.no-wrap');
+
+        // Initialize Team Array
+        let teamArray = [];
+
+        // Extract Teams
+        teams.each(function (idx, team) {
+            teamArray.push($(team).text());
+        });
+        // console.log(teamArray)
+
+        //////////////////////////// GET TEAM RESULTS ////////////////////////////////////
+        const results1 =  $('#sr-container > div > div > div.container.container-main.contair-full-height-flex-auto > div > div > div > div:nth-child(4) > div:nth-child(2) > div > div > div > div > div > div > div:nth-child(1) > table > tbody > tr > td.divide.text-center > div > div:nth-child(2) > div > div'); // For the First Team
+
+        const results2 =  $('#sr-container > div > div > div.container.container-main.contair-full-height-flex-auto > div > div > div > div:nth-child(4) > div:nth-child(3) > div > div > div > div > div > div > div:nth-child(1) > table > tbody > tr > td.divide.text-center > div > div:nth-child(2) > div > div'); // For the Second Team
+		
+        // Get all Match Nos
+		let matchNo;
+		if(index < 1) {
+			const matchNos =  $('#sr-container > div > div > div.container.container-main.contair-full-height-flex-auto > div > div > div > div:nth-child(4) > div:nth-child(2) > div > div > div > div > div > div > div > table > tbody > tr > td > span'); // For the Match Number
+			matchNo = matchNos.text().split("VFLM");
+			matchNo.shift();
+		}
+
+        
+        let teamResult1 = (results1.text().split(" (FT)"));
+        let teamResult2 = (results2.text().split(" (FT)"));
+
+        // Remove the empty result string
+        teamResult1.pop();
+        teamResult2.pop();
+
+        // Get Scores Outcome (Even/Odd)
+        let teamStatus1 = parseScores(teamResult1);
+        let teamStatus2 = parseScores(teamResult2);
+
+        // console.log(teamStatus1, teamStatus2);
+
+        //////////////////////////// CHECK FOR RUN ////////////////////////////////////
+        var data1, data2;
+        // Check run for team 1
+        if(checkRun(teamStatus1)) {
+            data1 = {
+                status : true,
+                teamName: teamArray[0],
+                run: teamStatus1,
+                url: url,
+                teamID: teams_ids[0]
+            }
+            // console.log(data1)
+        } else {
+            data1 = undefined;
+            // console.log(data1)
+        }
+        // Check run for team 2
+        if(checkRun(teamStatus2)) {
+            data2 = {
+                status : true,
+                teamName: teamArray[1],
+                run: teamStatus2,
+                url: url,
+                teamID: teams_ids[1]
+            }
+            // console.log(data2)
+        } else {
+            data2 = undefined
+        }
+
+        /////////////////// RETURN RESULTS //////////////////////////
+        return {data1, data2, matchNo};
     } catch (err) {
         console.error(err);
         return { err: err.message };

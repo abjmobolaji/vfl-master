@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./assets/style.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon-16x16.png">
+    <link rel="manifest" href="./assets/site.webmanifest">
+    
+    <title>VFL Master - Winning Games - V2</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-sm bg-nav">
+        <a class="navbar-brand" href="#"><h3>VFL Master</h3></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="collapsibleNavbar">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="./">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./games.html">Games</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./full.html">Games_V2</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./history.html">History</a>
+                </li>    
+            </ul>
+        </div>  
+    </nav>
+    <div class="main-content">
+        <!-- Body Content will render here -->
+        <div class="row justify-content-between align-items-end">
+            <div class="col-auto ">
+                <h4>Teams</h4>
+            </div>
+            <div class="col-auto m-auto">
+                <h6>Last Updated: </h6><span id="lastUpdated"></span>
+            </div>
+            <div class="col-auto">
+                <div class="form-inline">
+                    <div class="form-group mx-sm-3 mb-2">
+                        <b>Mode:&nbsp;&nbsp;</b>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio6" value="6">
+                            <label class="form-check-label" for="inlineRadio6">6</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio7" value="7">
+                            <label class="form-check-label" for="inlineRadio7">7</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio8" value="8">
+                            <label class="form-check-label" for="inlineRadio8">8</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio9" value="9">
+                            <label class="form-check-label" for="inlineRadio9">9</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio10" value="10">
+                            <label class="form-check-label" for="inlineRadio10">10</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn bg-nav mb-2" onclick="updateMode()">Update</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="fullTable">
+            <hr/>
+            <div class="d-flex justify-content-center">
+                <div class="spinner-grow" style="width: 200px; height: 200px;" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+            <h2 style="text-align: center; margin-top: 10px">Loading...</h2>
+        </div>
+        <div id="emptyTable" class="d-none">
+            <hr/>
+            <img src="./assets/image.png"  width="400px"/>
+            <h2 class="mt-3">No Record Found!!!</h2>
+        </div>
+    </div>
+
+
+
+    <footer>
+        <h2>VFL Master - Abjmobolaji</h2>
+        <p>Copyright &copy; 2021</p>
+    </footer>
+
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="./assets/script.js"></script>
+
+    <script>
+        // Initialize Variables
+        const url = getURL()+"full";
+        var notifyArr = [];
+        var mode = sessionStorage.getItem('mode') || 6; // Minimum number of run before a notification is displayed
+        $( document ).ready(function() {
+            console.log("Start: ", Date.now()/1000)
+            // Check if there is a time lapse of 10 minutes
+            let currentTime = Date.now()
+            if (sessionStorage.getItem('timestamp') !== null)  {
+                let timestamp = sessionStorage.getItem('timestamp');
+                if((currentTime - timestamp) > 600000) {
+                    sessionStorage.removeItem('games');
+                    sessionStorage.setItem('timestamp', currentTime);
+                } else {
+                    sessionStorage.setItem('timestamp', currentTime);
+                }
+            } else {
+                sessionStorage.removeItem('games');
+                sessionStorage.setItem('timestamp', currentTime);
+            }
+            document.getElementById(`inlineRadio${mode}`).checked = true;
+
+            // Fetch Records
+            fetchFullGameRecords(url);
+        });
+
+        /* setInterval(function(){ 
+            fetchFullGameRecords(url);
+        }, 105000); */
+
+        // Fetch Records
+        function fetchFullGameRecords(url) {
+            // console.log(url)
+            $.ajax({
+                    url: url,
+                    type: 'GET',
+                    dataType: 'json', // added data type
+                    success: function(res) {
+                        if(res.status == "success") {
+                            if(res.data.length > 0) {
+                                // Initialize Variables
+                                let { data, match } = res;
+                                // Initialize Badge Color
+                                let badgeColor = {
+                                    5 : "danger", 6 : "warning", 
+                                    7 : "success", 8 : "success",
+                                    9 : "info", 10 : "primary", 11 : "dark"
+                                }
+                                // Create Table
+                                let body = `
+                                    <table class="table table-striped">
+                                        <thead class="bg-nav">
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Team Name</th>
+                                                <th scope="col">Level</th>
+                                                <th scope="col">Type</th>
+                                                <th scope="col">Link</th>
+                                                <th scope="col" class="d-none d-lg-table-cell d-xl-table-cell">Last 5 Games</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>`;
+                                // Check if games(run) exist
+                                if (sessionStorage.getItem('games') !== null) {
+                                    let savedGames = JSON.parse(sessionStorage.getItem('games'));
+                                    let myGames = {}; // Initialize myGames object
+                                    let counter = 0;
+                                    for(let i = 0; i < data.length; i++) {
+                                        let { teamName, run, url, teamID } = data[i];
+                                        // Check if team has a run ongoing
+                                        myGames[teamID] = (savedGames.hasOwnProperty(teamID)) ? savedGames[teamID] : {};
+                                        for(let j = 0; j < run.length; j++) {
+                                            myGames[teamID][match[j]] = run[0];
+                                        }
+                                        let runLength = Object.keys(myGames[teamID]).length; // Run Length
+                                        // Add run to Notifications if greater equal than "Mode"
+                                        mode = parseInt(sessionStorage.getItem('mode')) || 6;
+                                        if(runLength >= mode) {
+                                            notifyArr.push(`${data.teamName} - ${data.run[0]}-(${runLength})`);
+                                        }
+                                        body += `<tr>
+                                                    <th scope="row">${++counter}</th>
+                                                    <td>${data[i].teamName}</td>
+                                                    <td><span class="badge badge-pill badge-${badgeColor[runLength]}">${runLength}</span></td>                            
+                                                    <td class="make-bold">${data[i].run[0]}</td>
+                                                    <td><a class="btn btn-success gameLink" href="${data[i].url}" target="_blank" role="button">Live</a></td>
+                                                    <td class="d-none d-lg-table-cell d-xl-table-cell">${data[i].run.join(", ")}</td>                        
+                                                </tr>`;
+                                    }
+                                    // Update SessionStorage with New Runs
+                                    sessionStorage.setItem('games', JSON.stringify(myGames));
+
+                                } else {
+                                    let myGames = {}; // Initialize myGames object
+                                    let runLength = 5; // Run length
+                                    let counter = 0;
+                                    for(let i = 0; i < data.length; i++) {
+                                        let { teamName, run, url, teamID } = data[i];
+                                        myGames[teamId] = {};
+                                        for(let j = 0; j < run.length; j++) {
+                                            myGames[teamId][match[j]] = run[0];
+                                        }
+                                        body += `<tr>
+                                                    <th scope="row">${++counter}</th>
+                                                    <td>${data[i].teamName}</td>
+                                                    <td><span class="badge badge-pill badge-${badgeColor[runLength]}">${runLength}</span></td>                            
+                                                    <td class="make-bold">${data[i].run[0]}</td>
+                                                    <td><a class="btn btn-success gameLink" href="${data[i].url}" target="_blank" role="button">Live</a></td>
+                                                    <td class="d-none d-lg-table-cell d-xl-table-cell">${data[i].run.join(", ")}</td>                        
+                                                </tr>`;
+                                    }
+                                    // Update SessionStorage with New Runs
+                                    sessionStorage.setItem('games', JSON.stringify(myGames));
+                                }
+
+
+                                // End Table
+                                body += `
+                                        </tbody>
+                                    </table>`;
+                                
+                                $('#fullTable').html(body).promise().done(function(){
+                                    const d = new Date();
+                                    let text = d.toLocaleTimeString();
+                                    document.getElementById("lastUpdated").innerHTML = text;
+
+                                    const pageURL = "https://vflmasters.tk/full.html";
+                                    if(notifyArr.length) {
+                                        let notifyData = notifyArr.join(" \n ");
+                                        showNotification(notifyData, pageURL);
+                                    }
+                                    console.log("End: ", Date.now()/1000)
+                                });
+                            } else {
+                                sessionStorage.removeItem('games');
+                                $('#fullTable').html(`
+                                    <table class="table table-striped">
+                                        <thead class="bg-nav">
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Team Name</th>
+                                                <th scope="col">Level</th>
+                                                <th scope="col">Type</th>
+                                                <th scope="col">Link</th>
+                                                <th scope="col" class="d-none d-lg-table-cell d-xl-table-cell">Last 5 Games</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td colspan="6" style="text-align: center"><h5>No Winning Runs Found Yet!!!</h5></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                `);
+                            }
+                 
+
+
+                            // displayFullTable(res.data);
+                            //  console.log(res.data);
+                        }
+                        else displayEmpty("fullTable");
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        displayEmpty("fullTable");
+                    }
+                });
+        }
+
+        // Update Mode
+        function updateMode() {
+            let password = prompt("Enter Password: ");
+            if(btoa(password) !== "MXR3bzNmb3Vy")  {
+                alert("Wrong password!!!");
+                return;
+            }
+            var modeOptions = document.getElementsByTagName('input');
+            var mode;
+            for (let i = 0; i < modeOptions.length; i++) {
+                if (modeOptions[i].type === 'radio' && modeOptions[i].checked) {
+                    mode = modeOptions[i].value;  
+                    sessionStorage.setItem('mode', mode)
+                    break;     
+                }
+            }
+            alert("Mode Updated!!!");
+        }
+
+        // Display Table
+        function displayFullTable(result) {
+            $("#emptyTable").addClass("d-none");
+                        
+            let html = `
+                <table class="table table-striped">
+                    <thead class="bg-nav">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Team Name</th>
+                        <th scope="col">Level</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Link</th>
+                        <th scope="col" class="d-none d-lg-table-cell d-xl-table-cell">Last 5 Games</th>
+                    </tr>
+                    </thead>
+                    <tbody>`;
+            // Content
+            let counter = 0;
+            for(let i = 0; i < result.length; i++) {
+                html += displayTR(result[i].data1, ++counter);
+            }
+            html += `
+                    </tbody>
+                </table>
+            `;
+
+            $('#fullTable').html(html).promise().done(function(){
+                const d = new Date();
+                let text = d.toLocaleTimeString();
+                document.getElementById("lastUpdated").innerHTML = text;
+
+                const pageURL = "https://vflmasters.tk/full.html";
+                if(notifyArr.length) {
+                    let notifyData = notifyArr.join(" \n ");
+                    showNotification(notifyData, pageURL);
+                }
+            });
+        }
+
+        // Display tr
+        function displayTR(data, i) {
+            let html;
+            if(data.status) {
+                notifyArr.push(`${data.teamName} - ${data.run[0]}`);
+                html = `<tr>
+                            <th scope="row">${i}</th>
+                            <td>${data.teamName}</td>
+                            <td><span class="badge badge-success">Open</span></td>                            
+                            <td class="make-bold">${data.run[0]}</td>
+                            <td><a class="btn btn-success gameLink" href="${data.url}" target="_blank" role="button">Live</a></td>
+                            <td class="d-none d-lg-table-cell d-xl-table-cell">${data.run.join(", ")}</td>                        
+                        </tr>`;
+            } else {
+                html = `<tr>
+                            <th scope="row">${i}</th>
+                            <td>${data.teamName}</td>
+                            <td><span class="badge badge-danger">Closed</span></td>
+                            <td class="make-bold">----</td>
+                            <td><button class="btn btn-danger gameLink" disabled>Wait</button></td>
+                            <td class="d-none d-lg-table-cell d-xl-table-cell">${data.run.join(", ")}</td>
+                        </tr>`;
+            }
+            return html;
+        }
+
+    </script>
+
+    <script>    
+        // Desktop Notifications
+        function checkNotification() {
+            // console.log(Notification.permission)
+            if(Notification && Notification.permission === "granted") {
+                // showNotification()
+            } else if(Notification && Notification.permission !== "denied") { 
+                Notification.requestPermission().then(permission => {
+                    if(permission === "granted") {
+                        // showNotification();
+                    } else {
+                        alert("Notifications not enabled!!!");
+                    }
+                })
+            }
+        }
+        /* function checkNotification() {
+            if(Notification && Notification.permission === "granted") {
+                showNotification()
+            } else if(Notification && Notification.permission !== "denied") { 
+                Notification.requestPermission().then(permission => {
+                    console.log(permission)
+                })
+            }
+        } */
+        checkNotification();
+
+        function showNotification(data = "No new update yet!!!", url = "http://localhost:3000/") {
+            // console.log("Yes");
+            const notification = new Notification("VFL Master Update", {
+                body: data,
+                icon: "./assets/logo.png"
+            })
+
+            notification.onclick = (e) => {
+                window.location.href = url;
+            }
+        }
+    </script>
+</body>
+</html>
