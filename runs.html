@@ -42,9 +42,22 @@
     </nav>
     <div class="main-content">
         <!-- Body Content will render here -->
-        <h4>Games History</h4>
+        <div class="row justify-content-between align-items-end">
+            <div class="col-auto ">
+                <h4>Teams Max-Runs</h4>
+            </div>
+            <div class="col-auto ml-auto">
+                <div class="form-inline">
+                    <div class="form-group mx-sm-3 mb-2">
+                      <label for="seasonID" class="sr-only"></label>
+                    </div>
+                    <button type="submit" class="btn bg-nav mb-2" onclick="resetRuns()">Reset Runs</button>
+                </div>
+            </div>
+        </div>
+        <h4></h4>
 
-        <div id="historyTable">
+        <div id="runsTable">
             <div class="d-flex justify-content-center">
                 <div class="spinner-grow" style="width: 100px; height: 100px;" role="status">
                     <span class="sr-only">Loading...</span>
@@ -73,87 +86,91 @@
     <script src="./assets/script.js"></script>
 
     <script>
-        const url = getURL()+"history";
+        const teams = {
+            276501 : "VFL Libson", 276505 : "VFL Moscow", 276509 : "VFL Copehagen", 276513 : "VFL Rome",
+            276502 : "VFL London", 276506 : "VFL Zagreb", 276510 : "VFL Madrid", 276514 : "VFL Kiev",
+            276503 : "VFL Anthens", 276507 : "VFL Amsterdam", 276511 : "VFL Ankara", 276515 : "VFL Prague",
+            276504 : "VFL Vienna", 276508 : "VFL Berlin", 276512 : "VFL Paris", 276516 : "VFL Bern"
+        }
         $( document ).ready(function() {
-            fetchRecords(url);
+            fetchRecords();
         });
 
         // Fetch Records
-        function fetchRecords(url, query = null) {
-            url = (query) ? url+"?page="+query : url;
-            $.ajax({
-                    url: url,
-                    type: 'GET',
-                    dataType: 'json', // added data type
-                    success: function(res) {
-                        if(res.status == "success" && res.data.length > 0) displayHistoryTable(res);
-                        else displayEmpty("historyTable");
-                    },
-                    error: function (xhr, ajaxOptions, thrownError) {
-                        displayEmpty("historyTable");
-                    }
-                });
-        }
-
-        // Display Table
-        function displayHistoryTable(data) {
+        function fetchRecords() {
             $("#emptyTable").addClass("d-none");
-            
-            let result = data.data;
-            
+            const keys = Object.keys(teams);
+
             let html = `
                 <table class="table table-striped">
                     <thead class="bg-nav">
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Day</th>
-                        <th scope="col" class="d-none d-lg-table-cell d-xl-table-cell">Date</th>
-                        <th scope="col">Start #</th>
-                        <th scope="col">End #</th>
-                        <th scope="col">Profit #</th>
+                        <th scope="col">Team ID</th>
+                        <th scope="col">Team Name</th>
+                        <th scope="col">Max Run</th>
                     </tr>
                     </thead>
                     <tbody>`;
-            // Content
-            for(let i = 0; i < result.length; i++) {
-                let profitBadge = (result[i].profit > 0) ? `success` : (result[i].profit === 0) ? 'info' : 'danger';
-                let profit = Math.abs(result[i].profit);
-                const d = new Date(result[i].createdAt);
-                let day = d.getDate();
 
+            // iterate over object
+            let i = 0;
+            keys.forEach((key, index) => {
+                console.log(`${key}: ${teams[key]}`);
                 html += `<tr>
                             <th scope="row">${i + 1}</th>
-                            <td>${result[i].day}</td>
-                            <td class="d-none d-lg-table-cell d-xl-table-cell">${day}-${result[i].date}</td>
-                            <td>₦${numberWithCommas(result[i].start)} </td>
-                            <td>₦${numberWithCommas(result[i].end)}</td>
-                            <td><span class="alert-${profitBadge} p-2">₦${numberWithCommas(profit)}</span></td>
+                            <td>${key}</td>
+                            <td>${teams[key]}</td>
+                            <td>${formatText(localStorage.getItem(key))}</td>
                         </tr>`;
-            }
-
+                i++;
+            });
             html += `
                     </tbody>
                 </table>
             `;
-            let prevPage = (data.prev == 0 || data.prev) ? `<li class="page-item" id="prev"><a class="page-link navPage" id="page-${data.prev}" href="#">Previous</a></li>` : "";
-            let nextPage = (data.next) ? `<li class="page-item" id="next"><a class="page-link navPage" id="page-${data.next}" href="#">Next</a></li>` : "";
-            // Pagination
-            html += `<div class="nav-pagination">
-                        <nav aria-label="Page navigation">
-                            <ul class="pagination">
-                                ${prevPage}
-                                ${nextPage}
-                            </ul>
-                        </nav>
-                    </div>`;
-            $("#historyTable").html(html);
+            $("#runsTable").html(html);
         }
 
-        $('body').on('click', '.navPage', function(e){
-			e.preventDefault(); e.stopPropagation();
-            let id = this.id.split("-")[1];
-            fetchRecords(url, id);
-        });
+        // Format Text base on value
+        function formatText(val) {
+            if(!val || isNaN(val)) {
+                return "-";
+            }
+            if(val < 5) {
+                return `<span class="text-muted">${val}</span>`;
+            }
+            else if(val == 5) {
+                return `<span class="text-dark">${val}</span>`;
+            }
+            else if(val == 6) {
+                return `<span class="text-success">${val}</span>`;
+            }
+            else if(val == 7) {
+                return `<span class="text-success">${val}</span>`;
+            }
+            else if(val == 8) {
+                return `<span class="text-info">${val}</span>`;
+            }
+            else if(val == 9) {
+                return `<span class="text-primary">${val}</span>`;
+            }
+            else if(val == 10) {
+                return `<span class="text-secondary">${val}</span>`;
+            }
+            else if(val == 11) {
+                return `<span class="text-dark">${val}</span>`;
+            }
+            else {
+                return `<span class="text-danger">${val}</span>`;
+            }
+        }
+
+        // Reset Runs
+        function resetRuns() {
+            Object.keys(teams).forEach(k => localStorage.removeItem(k));
+            fetchRecords();
+        }
     </script>
 </body>
 </html>
