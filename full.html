@@ -177,12 +177,18 @@
                                     let counter = 0;
                                     for(let i = 0; i < data.length; i++) {
                                         let { teamName, run, url, teamID } = data[i];
+                                        let teamCount = localStorage.getItem(teamID) || 5;
+
                                         // Check if team has a run ongoing
                                         myGames[teamID] = (savedGames.hasOwnProperty(teamID)) ? savedGames[teamID] : {};
                                         for(let j = 0; j < run.length; j++) {
                                             myGames[teamID][match[j]] = run[0];
                                         }
                                         let runLength = Object.keys(myGames[teamID]).length; // Run Length
+                                        
+                                        // Check for max run Per team and save it in localstorage
+                                        let maxRun = (runLength > teamCount) ? runLength : teamCount;
+                                        localStorage.setItem(teamID, maxRun);
                                         // Add run to Notifications if greater equal than "Mode"
                                         mode = parseInt(sessionStorage.getItem('mode')) || 6;
                                         if(runLength >= mode) {
