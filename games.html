@@ -248,7 +248,7 @@
 
         function showNotification(data = "No new update yet!!!", url = "http://localhost:3000/") {
             // console.log("Yes");
-            const notification = new Notification("VFL Master Update", {
+            const notification = new Notification(`VFL Master - ${Date.now()}`, {
                 body: data,
                 icon: "./assets/logo.png"
             })

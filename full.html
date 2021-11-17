@@ -112,7 +112,7 @@
         var notifyArr = [];
         var mode = sessionStorage.getItem('mode') || 6; // Minimum number of run before a notification is displayed
         $( document ).ready(function() {
-            console.log("Start: ", Date.now()/1000)
+            // console.log("Start: ", Date.now()/1000)
             // Check if there is a time lapse of 10 minutes
             let currentTime = Date.now()
             if (sessionStorage.getItem('timestamp') !== null)  {
@@ -146,7 +146,7 @@
                     dataType: 'json', // added data type
                     success: function(res) {
                         if(res.status == "success") {
-                            console.log(res);
+                            // console.log(res);
                             if(res.data.length > 0) {
                                 // Initialize Variables
                                 let { data, match } = res;
@@ -401,7 +401,7 @@
 
         function showNotification(data = "No new update yet!!!", url = "http://localhost:3000/") {
             // console.log("Yes");
-            const notification = new Notification("VFL Master Update", {
+            const notification = new Notification(`VFL Master - ${Date.now()}`, {
                 body: data,
                 icon: "./assets/logo.png"
             })
