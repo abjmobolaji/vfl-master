@@ -221,7 +221,7 @@
                                                     <td>${data[i].teamName}</td>
                                                     <td><span class="badge badge-pill badge-${badgeColor[runLength]}">${runLength}</span></td>                            
                                                     <td class="make-bold">${data[i].run[0]}</td>
-                                                    <td><a class="btn btn-success gameLink" href="${data[i].url}" target="_blank" role="button">Live</a></td>
+                                                    <td><a class="btn btn-${badgeColor[runLength]} gameLink" href="${data[i].url}" target="_blank" role="button">Live</a></td>
                                                     <td class="d-none d-lg-table-cell d-xl-table-cell">${data[i].run.join(", ")}</td>                        
                                                 </tr>`;
                                     }
