@@ -1,4 +1,5 @@
-require("dotenv").config();const express = require('express');
+require("dotenv").config();
+const express = require('express');
 const exphbs = require('express-handlebars');
 const axios = require("axios");
 const cheerio = require("cheerio");
@@ -23,6 +24,8 @@ const urls = [
     `https://s5.sir.sportradar.com/bet9javirtuals/en/1/season/${season}/h2h/276514/276513`, // Kiev, Rome
     `https://s5.sir.sportradar.com/bet9javirtuals/en/1/season/${season}/h2h/276504/276506` // Vienna, Zagreb
 ];
+
+console.log(urls);
 
 // Initialize Express
 const app = express();
