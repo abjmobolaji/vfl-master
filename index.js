@@ -11,7 +11,7 @@ const { exit } = require("process");
 
 
 // Get Season ID
-const season = fs.readFileSync('./season.txt', {encoding:'utf8', flag:'r'}) || "2244940"; 
+const season = "2244940" || fs.readFileSync('./season.txt', {encoding:'utf8', flag:'r'}) || "2244940"; 
 
 // Initialize URLs Array
 const urls = [
