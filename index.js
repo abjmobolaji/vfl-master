@@ -402,6 +402,7 @@ async function scrapeWinningData(url, index = 1) {
         //////////////////////////// GET TEAM NAMES ////////////////////////////////////
         const teams =  $('#teambox > div.col-xs.flex-xs-no-grow.flex-xs-basis-auto.no-wrap.ie-fallback-width-65 > div > div.col-xs-12.no-wrap.cursor-pointer > div.hidden-xs-up.visible-sm-up > div > div.col-xs.flex-xs-no-grow.wrap > div.hidden-xs-up.visible-sm-up.size-l.no-wrap');
 
+	
         // Initialize Team Array
         let teamArray = [];
 
@@ -409,7 +410,7 @@ async function scrapeWinningData(url, index = 1) {
         teams.each(function (idx, team) {
             teamArray.push($(team).text());
         });
-        // console.log(teamArray)
+        console.log(teamArray)
 
         //////////////////////////// GET TEAM RESULTS ////////////////////////////////////
         const results1 =  $('#sr-container > div > div > div.container.container-main.contair-full-height-flex-auto > div > div > div > div:nth-child(4) > div:nth-child(2) > div > div > div > div > div > div > div:nth-child(1) > table > tbody > tr > td.divide.text-center > div > div:nth-child(2) > div > div'); // For the First Team
@@ -436,7 +437,7 @@ async function scrapeWinningData(url, index = 1) {
         let teamStatus1 = parseScores(teamResult1);
         let teamStatus2 = parseScores(teamResult2);
 
-        // console.log(teamStatus1, teamStatus2);
+        console.log(teamStatus1, teamStatus2);
 
         //////////////////////////// CHECK FOR RUN ////////////////////////////////////
         var data1, data2;
