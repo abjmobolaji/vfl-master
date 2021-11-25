@@ -26,7 +26,7 @@ const urls = [
 
 // Initialize Express
 const app = express();
-const port =  process.env.PORT || 3000;
+const port =  process.env.PORT || 4000;
 
 // Body Parser
 app.use(express.json({ extended: true }));
@@ -478,7 +478,7 @@ async function scrapeWinningData(url, index = 1) {
 
 // Server 
 app.listen(port, () => {
-    console.log('The web server has started on port 3000');
+    console.log('The web server has started on port ' + port);
     if(port === 3000) {
         console.log("http://localhost:3000");
     }
