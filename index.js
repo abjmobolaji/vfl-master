@@ -393,11 +393,14 @@ async function scrapeWinningData(url, index = 1) {
     if(!url) return;
     // get team ids from urls
     let teams_ids = url.split('h2h/')[1].split("/");
+	console.log(url);
     try {
         // Fetch HTML of the page we want to scrape
         const { data } = await axios.get(url);
         // Load HTML we fetched in the previous line
         const $ = cheerio.load(data,null, false);
+	    
+	    console.log($.html);
 
         //////////////////////////// GET TEAM NAMES ////////////////////////////////////
         const teams =  $('#teambox > div.col-xs.flex-xs-no-grow.flex-xs-basis-auto.no-wrap.ie-fallback-width-65 > div > div.col-xs-12.no-wrap.cursor-pointer > div.hidden-xs-up.visible-sm-up > div > div.col-xs.flex-xs-no-grow.wrap > div.hidden-xs-up.visible-sm-up.size-l.no-wrap');
