@@ -25,11 +25,11 @@ const urls = [
     `https://s5.sir.sportradar.com/bet9javirtuals/en/1/season/${season}/h2h/276504/276506` // Vienna, Zagreb
 ];
 
-console.log(urls);
+// console.log(urls);
 
 // Initialize Express
 const app = express();
-const port =  process.env.PORT || 4000;
+const port =  process.env.PORT || 3000;
 
 // Body Parser
 app.use(express.json({ extended: true }));
@@ -396,14 +396,14 @@ async function scrapeWinningData(url, index = 1) {
     if(!url) return;
     // get team ids from urls
     let teams_ids = url.split('h2h/')[1].split("/");
-	console.log(url);
+	// console.log(url);
     try {
         // Fetch HTML of the page we want to scrape
         const { data } = await axios.get(url);
         // Load HTML we fetched in the previous line
         const $ = cheerio.load(data,null, false);
 	    
-	    console.log($.html);
+	    // console.log($.html);
 
         //////////////////////////// GET TEAM NAMES ////////////////////////////////////
         const teams =  $('#teambox > div.col-xs.flex-xs-no-grow.flex-xs-basis-auto.no-wrap.ie-fallback-width-65 > div > div.col-xs-12.no-wrap.cursor-pointer > div.hidden-xs-up.visible-sm-up > div > div.col-xs.flex-xs-no-grow.wrap > div.hidden-xs-up.visible-sm-up.size-l.no-wrap');
@@ -416,7 +416,7 @@ async function scrapeWinningData(url, index = 1) {
         teams.each(function (idx, team) {
             teamArray.push($(team).text());
         });
-        console.log(teamArray)
+        // console.log(teamArray)
 
         //////////////////////////// GET TEAM RESULTS ////////////////////////////////////
         const results1 =  $('#sr-container > div > div > div.container.container-main.contair-full-height-flex-auto > div > div > div > div:nth-child(4) > div:nth-child(2) > div > div > div > div > div > div > div:nth-child(1) > table > tbody > tr > td.divide.text-center > div > div:nth-child(2) > div > div'); // For the First Team
@@ -443,7 +443,7 @@ async function scrapeWinningData(url, index = 1) {
         let teamStatus1 = parseScores(teamResult1);
         let teamStatus2 = parseScores(teamResult2);
 
-        console.log(teamStatus1, teamStatus2);
+        // console.log(teamStatus1, teamStatus2);
 
         //////////////////////////// CHECK FOR RUN ////////////////////////////////////
         var data1, data2;
